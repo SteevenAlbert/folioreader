@@ -1,12 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+// remove this deprecated plugin
+// apply plugin: 'kotlin-android-extensions'
 
 android {
-
     compileSdkVersion versions.androidCompileSdk
-
+    buildFeatures {
+        viewBinding true
+    }
     defaultConfig {
         applicationId "com.folioreader.android.sample"
         minSdkVersion versions.androidMinSdk
@@ -46,6 +48,10 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -70,5 +76,4 @@ dependencies {
             details.useVersion("3.3.2-5309881")
         }
     }
-
 }

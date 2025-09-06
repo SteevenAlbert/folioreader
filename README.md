@@ -44,7 +44,7 @@ Add following dependency to your root project `build.gradle` file:
 allprojects {
     repositories {
         ...
-        jcenter()
+        
         maven { url "https://jitpack.io" }
         ...
     }
