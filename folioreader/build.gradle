@@ -28,6 +28,7 @@ ext {
 }
 
 android {
+    namespace 'com.folioreader'
     useLibrary 'org.apache.http.legacy'
     compileSdkVersion versions.androidCompileSdk
     buildFeatures {
