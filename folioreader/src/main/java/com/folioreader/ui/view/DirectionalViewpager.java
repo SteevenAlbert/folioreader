@@ -63,7 +63,7 @@ public class DirectionalViewpager extends ViewGroup {
     private static final String TAG = "ViewPager";
     private static final boolean DEBUG = false;
 
-    private static final boolean USE_CACHE = false;
+    private static final boolean USE_CACHE = true;
 
     private static final int DEFAULT_OFFSCREEN_PAGES = 1;
     private static final int MAX_SETTLE_DURATION = 600; // ms
@@ -2325,7 +2325,7 @@ public class DirectionalViewpager extends ViewGroup {
             }
         }
         if (mInternalPageChangeListener != null) {
-            mInternalPageChangeListener.onPageSelected(position);
+            mInternalPageChangeListener. onPageSelected(position);
         }
     }
 

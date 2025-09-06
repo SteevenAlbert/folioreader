@@ -7,14 +7,14 @@
     <string name="lora">Lora</string>
     <string name="raleway">Raleway</string>
 
-    <string name="andada_font">fonts/andada/Andada-Regular.otf</string>
-    <string name="lato_font">fonts/lato/Lato-Regular.ttf</string>
-    <string name="lora_font">fonts/lora/Lora-Regular.ttf</string>
-    <string name="raleway_font">fonts/raleway/Raleway-Regular.ttf</string>
+    <string name="andada_font">fonts/Andada-Regular.otf</string>
+    <string name="lato_font">fonts/Lato-Regular.ttf</string>
+    <string name="lora_font">fonts/Lora-Regular.ttf</string>
+    <string name="raleway_font">fonts/Raleway-Regular.ttf</string>
 
-    <string name="minutes_left">%1$d minutes ·&#160;</string>
-    <string name="minute_left">%1$d minute ·&#160;</string>
-    <string name="less_than_minute">Less than a minute ·&#160;</string>
+    <string name="minutes_left">%1$d minutes left&#160;</string>
+    <string name="minute_left">%1$d minute left&#160;</string>
+    <string name="less_than_minute">Almost Done!&#160;</string>
 
     <string name="copied">Copied</string>
     <string name="send_to">Send to</string>

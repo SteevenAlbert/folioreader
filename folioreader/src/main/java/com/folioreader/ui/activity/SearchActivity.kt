@@ -17,12 +17,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.folioreader.Config
 import com.folioreader.R
+import com.folioreader.databinding.ActivitySearchBinding // Make sure this import is present
 import com.folioreader.model.locators.SearchLocator
 import com.folioreader.ui.adapter.ListViewType
 import com.folioreader.ui.adapter.OnItemClickListener
@@ -31,7 +32,6 @@ import com.folioreader.ui.view.FolioSearchView
 import com.folioreader.util.AppUtil
 import com.folioreader.util.UiUtil
 import com.folioreader.viewmodels.SearchViewModel
-import kotlinx.android.synthetic.main.activity_search.*
 import java.lang.reflect.Field
 
 class SearchActivity : AppCompatActivity(), OnItemClickListener {
@@ -62,6 +62,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
     private var savedInstanceState: Bundle? = null
     private var softKeyboardVisible: Boolean = true
     private lateinit var searchViewModel: SearchViewModel
+    private lateinit var binding: ActivitySearchBinding // Binding variable
 
     // To get collapseButtonView from toolbar for any click events
     private val toolbarOnLayoutChangeListener: View.OnLayoutChangeListener =
@@ -71,9 +72,10 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
                 oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
             ) {
 
-                for (i in 0 until toolbar.childCount) {
+                // Use binding.toolbar to access children
+                for (i in 0 until binding.toolbar.childCount) {
 
-                    val view: View = toolbar.getChildAt(i)
+                    val view: View = binding.toolbar.getChildAt(i)
                     val contentDescription: String? = view.contentDescription as String?
                     if (TextUtils.isEmpty(contentDescription))
                         continue
@@ -87,7 +89,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
                             navigateBack()
                         }
 
-                        toolbar.removeOnLayoutChangeListener(this)
+                        // Use binding.toolbar to remove the listener
+                        binding.toolbar.removeOnLayoutChangeListener(this)
                         return
                     }
                 }
@@ -105,15 +108,18 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
             setTheme(R.style.FolioDayTheme)
         }
 
-        setContentView(R.layout.activity_search)
+        // Inflate the layout using ViewBinding
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         init(config)
     }
 
     private fun init(config: Config) {
         Log.v(LOG_TAG, "-> init")
 
-        setSupportActionBar(toolbar)
-        toolbar.addOnLayoutChangeListener(toolbarOnLayoutChangeListener)
+        // Use binding.toolbar
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.addOnLayoutChangeListener(toolbarOnLayoutChangeListener)
         actionBar = supportActionBar!!
         actionBar.setDisplayHomeAsUpEnabled(true)
         actionBar.setDisplayShowTitleEnabled(false)
@@ -121,7 +127,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         try {
             val fieldCollapseIcon: Field = Toolbar::class.java.getDeclaredField("mCollapseIcon")
             fieldCollapseIcon.isAccessible = true
-            val collapseIcon: Drawable = fieldCollapseIcon.get(toolbar) as Drawable
+            // Use binding.toolbar
+            val collapseIcon: Drawable = fieldCollapseIcon.get(binding.toolbar) as Drawable
             UiUtil.setColorIntToDrawable(config.currentThemeColor, collapseIcon)
         } catch (e: Exception) {
             Log.e(LOG_TAG, "-> ", e)
@@ -133,10 +140,11 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         searchAdapter = SearchAdapter(this)
         searchAdapter.onItemClickListener = this
         linearLayoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = linearLayoutManager
-        recyclerView.adapter = searchAdapter
+        // Use binding.recyclerView
+        binding.recyclerView.layoutManager = linearLayoutManager
+        binding.recyclerView.adapter = searchAdapter
 
-        searchViewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        searchViewModel = ViewModelProvider(this)[SearchViewModel::class.java]
         searchAdapterDataBundle = searchViewModel.liveAdapterDataBundle.value!!
 
         val bundleFromFolioActivity = intent.getBundleExtra(SearchAdapter.DATA_BUNDLE)
@@ -146,7 +154,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
             searchAdapter.changeDataBundle(bundleFromFolioActivity)
             val position = bundleFromFolioActivity.getInt(BUNDLE_FIRST_VISIBLE_ITEM_INDEX)
             Log.d(LOG_TAG, "-> onCreate -> scroll to previous position $position")
-            recyclerView.scrollToPosition(position)
+            // Use binding.recyclerView
+            binding.recyclerView.scrollToPosition(position)
         }
 
         searchViewModel.liveAdapterDataBundle.observe(this, Observer<Bundle> { dataBundle ->
@@ -154,7 +163,10 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
             searchAdapter.changeDataBundle(dataBundle)
         })
     }
-
+    
+    // ... (no changes needed in the rest of the file from the previous answer)
+    // The rest of your activity methods should be here
+    // ...
     override fun onNewIntent(intent: Intent) {
         Log.v(LOG_TAG, "-> onNewIntent")
 
@@ -219,9 +231,9 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
         Log.v(LOG_TAG, "-> onBackPressed")
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         Log.v(LOG_TAG, "-> onCreateOptionsMenu")
-        menuInflater.inflate(R.menu.menu_search, menu!!)
+        menuInflater.inflate(R.menu.menu_search, menu)
 
         val config: Config = AppUtil.getSavedConfig(applicationContext)!!
         val itemSearch: MenuItem = menu.findItem(R.id.itemSearch)
@@ -261,7 +273,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
 
                 if (TextUtils.isEmpty(newText)) {
                     Log.v(LOG_TAG, "-> onQueryTextChange -> Empty Query")
-                    //supportLoaderManager.restartLoader(SEARCH_LOADER, null, this@SearchActivity)
                     searchViewModel.cancelAllSearchCalls()
                     searchViewModel.init()
 
@@ -274,16 +285,17 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
 
         itemSearch.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
 
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                 return true
             }
 
-            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                 Log.v(LOG_TAG, "-> onMenuItemActionCollapse")
                 navigateBack()
                 return false
             }
         })
+
 
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) softKeyboardVisible = true
@@ -291,32 +303,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickListener {
 
         return true
     }
-
-    /*override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-
-        val itemId = item?.itemId
-
-        if (itemId == R.id.itemSearch) {
-            Log.v(LOG_TAG, "-> onOptionsItemSelected -> ${item.title}")
-            //onSearchRequested()
-            return true
-        }
-
-        return super.onOptionsItemSelected(item!!)
-    }*/
-
-    /*override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-
-        val itemId = item?.itemId
-
-        if (itemId == R.id.itemSearch) {
-            Log.v(LOG_TAG, "-> onOptionsItemSelected -> ${item.title}")
-            //onSearchRequested()
-            return true
-        }
-
-        return super.onOptionsItemSelected(item!!)
-    }*/
 
     override fun onItemClick(
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,

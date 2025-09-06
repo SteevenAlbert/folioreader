@@ -21,6 +21,7 @@ class WebViewPager : ViewPager {
     }
 
     internal var horizontalPageCount: Int = 0
+    private var currentPage: Int = 0
     private var folioWebView: FolioWebView? = null
     private var takeOverScrolling: Boolean = false
     var isScrolling: Boolean = false
@@ -73,6 +74,8 @@ class WebViewPager : ViewPager {
             override fun onPageSelected(position: Int) {
 //
                 Log.v(LOG_TAG, "-> onPageSelected -> $position")
+                folioWebView?.updateHorizontalPage(position)
+
 //                val intent = Intent(this@WebViewPager.context,FolioPageFragment::class.java).apply {
 //                    putExtra("pageNo", position)
 //                }
@@ -115,6 +118,11 @@ class WebViewPager : ViewPager {
         uiHandler!!.post { setCurrentItem(pageIndex, false) }
     }
 
+    fun getCurrentPage(): Int{
+        return this.currentPage;
+    }
+
+
     @JavascriptInterface
     fun setPageToLast() {
 
@@ -129,26 +137,26 @@ class WebViewPager : ViewPager {
 
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
 
-        override fun onDown(e: MotionEvent?): Boolean {
+        override fun onDown(e: MotionEvent): Boolean {
             super@WebViewPager.onTouchEvent(e)
             return true
         }
 
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
             //Log.d(LOG_TAG, "-> onSingleTapUp");
             lastGestureType = LastGestureType.OnSingleTapUp
             return false
         }
 
-        override fun onLongPress(e: MotionEvent?) {
+        override fun onLongPress(e: MotionEvent) {
             super.onLongPress(e)
             //Log.d(LOG_TAG, "-> onLongPress -> " + e);
             lastGestureType = LastGestureType.OnLongPress
         }
 
         override fun onScroll(
-            e1: MotionEvent?,
-            e2: MotionEvent?,
+            e1: MotionEvent,
+            e2: MotionEvent,
             distanceX: Float,
             distanceY: Float
         ): Boolean {
@@ -158,8 +166,8 @@ class WebViewPager : ViewPager {
         }
 
         override fun onFling(
-            e1: MotionEvent?,
-            e2: MotionEvent?,
+            e1: MotionEvent,
+            e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
         ): Boolean {

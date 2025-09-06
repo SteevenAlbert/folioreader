@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply from: '../config/quality/quality.gradle'
 //apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 ext {
     bintrayRepo = 'maven'
@@ -31,7 +30,9 @@ ext {
 android {
     useLibrary 'org.apache.http.legacy'
     compileSdkVersion versions.androidCompileSdk
-
+    buildFeatures {
+        viewBinding true
+    }
     defaultConfig {
         minSdkVersion versions.androidMinSdk
         targetSdkVersion versions.androidTargetSdk
@@ -81,14 +82,14 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraintLayout"
     implementation "androidx.recyclerview:recyclerview:$versions.recyclerview"
-    implementation "com.google.android.material:material:$versions.material"
+    implementation 'com.google.android.material:material:1.9.0'
     testImplementation 'junit:junit:4.12'
 
     implementation 'org.slf4j:slf4j-android:1.7.25'
     implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
 
-    //Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    // Kotlin stdlib version explicitly set to 1.7.10
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
 
     implementation 'org.greenrobot:eventbus:3.1.1'
 
@@ -110,6 +111,10 @@ dependencies {
         exclude group: "org.slf4j", module: "slf4j-api"
         changing = true
     }
+
+    // Fix missing Fuel version
+    implementation "com.github.kittinunf.fuel:fuel:2.3.1"
+    implementation "com.github.kittinunf.fuel:fuel-android:2.3.1"
 
     // Only ReflectionUtils in Spring framework is used
     implementation 'org.springframework:spring-core:4.3.19.RELEASE'

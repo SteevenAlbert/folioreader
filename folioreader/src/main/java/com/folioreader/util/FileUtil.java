@@ -3,10 +3,12 @@ package com.folioreader.util;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.folioreader.BuildConfig;
 import com.folioreader.Constants;
 import com.folioreader.ui.activity.FolioActivity;
 
@@ -32,18 +34,18 @@ public class FileUtil {
         InputStream epubInputStream;
         boolean isFolderAvailable;
         try {
-            isFolderAvailable = isFolderAvailable(context, epubFileName);
-            filePath = getFolioEpubFilePath(context, epubSourceType, epubFilePath, epubFileName);
+            isFolderAvailable = isFolderAvailable(epubFileName);
+            filePath = getFolioEpubFilePath(epubSourceType, epubFilePath, epubFileName);
 
             if (!isFolderAvailable) {
                 if (epubSourceType.equals(FolioActivity.EpubSourceType.RAW)) {
                     epubInputStream = context.getResources().openRawResource(epubRawId);
-                    saveTempEpubFile(context, filePath, epubFileName, epubInputStream);
+                    saveTempEpubFile(filePath, epubFileName, epubInputStream);
                 } else if (epubSourceType.equals(FolioActivity.EpubSourceType.ASSETS)) {
                     AssetManager assetManager = context.getAssets();
                     epubFilePath = epubFilePath.replaceAll(Constants.ASSET, "");
                     epubInputStream = assetManager.open(epubFilePath);
-                    saveTempEpubFile(context, filePath, epubFileName, epubInputStream);
+                    saveTempEpubFile(filePath, epubFileName, epubInputStream);
                 } else {
                     filePath = epubFilePath;
                 }
@@ -56,21 +58,24 @@ public class FileUtil {
         return null;
     }
 
-    public static String getFolioEpubFolderPath(Context context, String epubFileName) {
-        return context.getCacheDir().getAbsolutePath()
-                + "/" + FOLIO_READER_ROOT + "/" + epubFileName;
-    }
-
-    public static String getFolioEpubFilePath(Context context, FolioActivity.EpubSourceType sourceType, String epubFilePath, String epubFileName) {
-        if (FolioActivity.EpubSourceType.SD_CARD.equals(sourceType)) {
-            return epubFilePath;
-        } else {
-            return getFolioEpubFolderPath(context, epubFileName) + "/" + epubFileName + ".epub";
+    public static String getFolioEpubFolderPath(String epubFileName) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.R) {
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + FOLIO_READER_ROOT + "/" + epubFileName;
+        }else {
+            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + FOLIO_READER_ROOT + "/" + epubFileName;
         }
     }
 
-    private static boolean isFolderAvailable(Context context, String epubFileName) {
-        File file = new File(getFolioEpubFolderPath(context, epubFileName));
+    public static String getFolioEpubFilePath(FolioActivity.EpubSourceType sourceType, String epubFilePath, String epubFileName) {
+        if (FolioActivity.EpubSourceType.SD_CARD.equals(sourceType)) {
+            return epubFilePath;
+        } else {
+            return getFolioEpubFolderPath(epubFileName) + "/" + epubFileName + ".epub";
+        }
+    }
+
+    private static boolean isFolderAvailable(String epubFileName) {
+        File file = new File(getFolioEpubFolderPath(epubFileName));
         return file.isDirectory();
     }
 
@@ -90,12 +95,12 @@ public class FileUtil {
         return epubFileName;
     }
 
-    public static Boolean saveTempEpubFile(Context context, String filePath, String fileName, InputStream inputStream) {
+    public static Boolean saveTempEpubFile(String filePath, String fileName, InputStream inputStream) {
         OutputStream outputStream = null;
         File file = new File(filePath);
         try {
             if (!file.exists()) {
-                File folder = new File(getFolioEpubFolderPath(context, fileName));
+                File folder = new File(getFolioEpubFolderPath(fileName));
                 folder.mkdirs();
 
                 outputStream = new FileOutputStream(file);

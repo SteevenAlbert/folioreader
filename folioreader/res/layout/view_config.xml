@@ -1,104 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="203dp"
-    tools:layout_gravity="bottom">
-
-    <ImageButton
-        android:id="@+id/view_config_ib_day_mode"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:clipToPadding="false">
+    <LinearLayout
+        android:id="@+id/view_config_font_size_ll"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toStartOf="@+id/view_config_ib_night_mode"
+        android:layout_height="95dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/icon_sun_sel"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <ImageButton
+            android:id="@+id/view_config_font_size_btn_decrease"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:background="@drawable/day_rounded_corner_background"
+            android:src="@drawable/ic_format_font_black_24dp"
+            android:layout_gravity="center"
+            android:contentDescription="Decrease Font Size" />
 
-    <ImageButton
-        android:id="@+id/view_config_ib_night_mode"
+        <TextView
+            android:id="@+id/view_config_fontSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_weight="0.5"
+            android:layout_gravity="center" />
+
+        <ImageButton
+            android:id="@+id/view_config_font_size_btn_increase"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:background="@drawable/day_rounded_corner_background"
+            android:src="@drawable/ic_format_font_black_36dp"
+            android:layout_gravity="center"
+            android:contentDescription="Increase Font Size" />
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/view_config_font_type"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/view_config_ib_day_mode"
-        app:srcCompat="@drawable/icon_moon_sel"
-        tools:ignore="MissingConstraints" />
-
-    <View
-        android:id="@+id/view3"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/grey_color"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        android:elevation="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_config_ib_night_mode" />
-
-    <Spinner
-        android:id="@+id/view_config_font_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
-
-    <View
-        android:id="@+id/view4"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/grey_color"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_config_font_spinner" />
+        app:layout_constraintTop_toBottomOf="@id/view_config_font_size_ll">
 
-    <ImageView
-        android:id="@+id/view_config_iv_label_font_small"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_margin="8dp"
-        android:adjustViewBounds="false"
-        android:scaleType="center"
-        android:tint="@color/grey_color"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
-        app:layout_constraintEnd_toStartOf="@+id/view_config_font_size_seek_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view4"
-        app:srcCompat="@drawable/ic_format_font_black_24dp" />
+        <Spinner
+            android:id="@+id/view_config_font_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/view_config_iv_label_font_big"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_margin="8dp"
-        android:cropToPadding="false"
-        android:scaleType="center"
-        android:tint="@color/grey_color"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/view_config_font_size_seek_bar"
-        app:layout_constraintTop_toBottomOf="@+id/view4"
-        app:srcCompat="@drawable/ic_format_font_black_36dp" />
-
-    <SeekBar
-        android:id="@+id/view_config_font_size_seek_bar"
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:max="4"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
-        app:layout_constraintEnd_toStartOf="@+id/view_config_iv_label_font_big"
-        app:layout_constraintStart_toEndOf="@+id/view_config_iv_label_font_small"
-        app:layout_constraintTop_toBottomOf="@+id/view4" />
-
-    <View
-        android:id="@+id/view5"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/grey_color"
-        app:layout_constraintBottom_toTopOf="@+id/buttonVertical"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="25dp"
+        android:scrollbars="none"
+        android:foregroundGravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/view_config_font_type"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_config_iv_label_font_small" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/scrollableThemes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <ImageButton
+                android:id="@+id/view_config_ib_day_mode"
+                android:layout_width="70dp"
+                android:layout_height="100dp"
+                android:paddingRight="15dp"
+                android:background="@drawable/day_rounded_corner_background"
+                android:scaleType="fitStart"
+                android:src="@drawable/paragraph_icon_light_mode"
+                android:layout_marginEnd="15dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Day Mode" />
+
+            <ImageButton
+                android:id="@+id/view_config_ib_night_mode"
+                android:layout_width="70dp"
+                android:layout_height="100dp"
+                android:paddingRight="15dp"
+                android:background="@drawable/night_rounded_corner_background"
+                android:scaleType="fitStart"
+                android:src="@drawable/paragraph_icon_night_mode_low_contrast"
+                android:layout_marginEnd="15dp"
+                android:contentDescription="Night Mode" />
+
+            <ImageButton
+                android:id="@+id/view_config_ib_cream_mode"
+                android:layout_width="70dp"
+                android:layout_height="100dp"
+                android:paddingRight="15dp"
+                android:background="@drawable/cream_rounded_corner_background"
+                android:scaleType="fitStart"
+                android:src="@drawable/paragraph_icon_light_mode"
+                android:layout_marginEnd="15dp"
+                android:contentDescription="Cream Mode" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <com.folioreader.util.StyleableTextView
         android:id="@+id/buttonVertical"
@@ -108,10 +139,12 @@
         android:text="@string/direction_vertical"
         android:textSize="17sp"
         app:folio_font="@string/lato_font"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonHorizontal"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="25dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view5" />
+        app:layout_constraintEnd_toStartOf="@+id/buttonHorizontal"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.folioreader.util.StyleableTextView
         android:id="@+id/buttonHorizontal"
@@ -121,9 +154,10 @@
         android:text="@string/direction_horizontal"
         android:textSize="17sp"
         app:folio_font="@string/lato_font"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintStart_toEndOf="@id/buttonVertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/buttonVertical"
-        app:layout_constraintTop_toBottomOf="@+id/view5" />
-
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

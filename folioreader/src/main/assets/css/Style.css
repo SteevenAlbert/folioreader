@@ -233,22 +233,22 @@ html.nightMode .highlight_underline {border-bottom: 2px solid rgba(240, 40, 20, 
 
 @font-face {
     font-family: 'andada';
-    src: url('file:///android_asset/fonts/andada/Andada-Regular.otf');
+    src: url('file:///android_asset/fonts/Andada-Regular.otf');
 }
 
 @font-face {
     font-family: 'lato';
-    src: url('file:///android_asset/fonts/lato/Lato-Regular.ttf');
+    src: url('file:///android_asset/fonts/Lato-Regular.ttf');
 }
 
 @font-face {
     font-family: 'lora';
-    src: url('file:///android_asset/fonts/lora/Lora-Regular.ttf');
+    src: url('file:///android_asset/fonts/Lora-Regular.ttf');
 }
 
 @font-face {
     font-family: 'raleway';
-    src: url('file:///android_asset/fonts/raleway/Raleway-Regular.ttf');
+    src: url('file:///android_asset/fonts/Raleway-Regular.ttf');
 }
 
 
@@ -276,6 +276,16 @@ font-family: "raleway", sans-serif !important;
 .textSizeFourPlus * { font-size: 20px ; }
 .textSizeFive * { font-size: 21px ; }
 .textSizeFivePlus * { font-size: 22px ; }
+.textSizeSix * { font-size: 23px ; }
+.textSizeSixPlus * { font-size: 24px ; }
+.textSizeSeven * { font-size: 25px ; }
+.textSizeSevenPlus * { font-size: 26px ; }
+.textSizeEight * { font-size: 27px ; }
+.textSizeEightPlus * { font-size: 28px ; }
+.textSizeNine * { font-size: 29px ; }
+.textSizeNinePlus * { font-size: 30px ; }
+.textSizeTen * { font-size: 30px ; }
+.textSizeTenPlus * { font-size: 31px ; }
 
 h1 {
 font-size: 2em !important;

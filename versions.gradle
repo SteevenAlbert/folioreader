@@ -7,12 +7,12 @@ versions.r2StreamerKotlin = "1.0.4-2"
 versions.projectVersionCode = 1
 versions.projectVersionName = "1.0"
 
-versions.androidMinSdk = 21
-versions.androidCompileSdk = 31
-versions.androidTargetSdk = 31
+versions.androidMinSdk = 30
+versions.androidCompileSdk = 33
+versions.androidTargetSdk = 33
 
 versions.androidGradlePlugin = '7.2.0'
-versions.kotlin = "1.3.72"
+versions.kotlin = "1.7.10"
 
 versions.appcompat = "1.1.0"
 versions.constraintLayout = "1.1.3"

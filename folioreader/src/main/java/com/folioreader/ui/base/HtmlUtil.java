@@ -66,7 +66,7 @@ public final class HtmlUtil {
         // Inject CSS & user font style
         String toInject = "\n" + cssPath + "\n" + jsPath + "\n";
 
-        File userFontFile = FontFinder.getFontFile(fontName);
+        File userFontFile = FontFinder.getFontFile(fontName, context);
         if (userFontFile != null) {
             System.out.println("Injected user font into CSS");
             System.out.println("  - path: " + userFontFile.getAbsolutePath());
@@ -93,20 +93,35 @@ public final class HtmlUtil {
         }
 
         switch (config.getFontSize()) {
-            case 0:
+            case 1:
                 classes += " textSizeOne";
                 break;
-            case 1:
+            case 2:
                 classes += " textSizeTwo";
                 break;
-            case 2:
+            case 3:
                 classes += " textSizeThree";
                 break;
-            case 3:
+            case 4:
                 classes += " textSizeFour";
                 break;
-            case 4:
+            case 5:
                 classes += " textSizeFive";
+                break;
+            case 6:
+                classes += " textSizeSix";
+                break;
+            case 7:
+                classes += " textSizeSeven";
+                break;
+            case 8:
+                classes += " textSizeEight";
+                break;
+            case 9:
+                classes += " textSizeNine";
+                break;
+            case 10:
+                classes += " textSizeTen";
                 break;
             default:
                 break;

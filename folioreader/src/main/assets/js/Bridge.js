@@ -88,6 +88,8 @@ function getReadingTime() {
     return readingTimeMinutes;
 }
 
+
+
 function scrollAnchor(id) {
     window.location.hash = id;
 }

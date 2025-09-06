@@ -310,16 +310,17 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             pageCountTextView.text = it
         })
 
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                getWriteExternalStoragePerms(),
-                WRITE_EXTERNAL_STORAGE_REQUEST
-            )
+        if (Build.VERSION.SDK_INT < 33) {
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this, getWriteExternalStoragePerms(), WRITE_EXTERNAL_STORAGE_REQUEST
+                )
+            } else {
+                setupBook()
+            }
         } else {
             setupBook()
         }
@@ -471,44 +472,22 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             createdMenu = menu
             menuInflater.inflate(R.menu.menu_main, menu)
 
-            val config = AppUtil.getSavedConfig(applicationContext)
-            config?.currentThemeColor?.let {
-                UiUtil.setColorIntToDrawable(
-                    it,
-                    menu.findItem(R.id.itemBookmark).icon
-                )
-            }
-            config?.currentThemeColor?.let {
-                UiUtil.setColorIntToDrawable(
-                    it,
-                    menu.findItem(R.id.itemSearch).icon
-                )
-            }
-            config?.currentThemeColor?.let {
-                UiUtil.setColorIntToDrawable(
-                    it,
-                    menu.findItem(R.id.itemConfig).icon
-                )
-            }
-            config?.currentThemeColor?.let {
-                UiUtil.setColorIntToDrawable(
-                    it,
-                    menu.findItem(R.id.itemTts).icon
-                )
-            }
+            val config = AppUtil.getSavedConfig(applicationContext)!!
+            UiUtil.setColorIntToDrawable(
+                config.currentThemeColor,
+                menu.findItem(R.id.itemBookmark).icon
+            )
+            UiUtil.setColorIntToDrawable(
+                config.currentThemeColor,
+                menu.findItem(R.id.itemSearch).icon
+            )
+            UiUtil.setColorIntToDrawable(
+                config.currentThemeColor,
+                menu.findItem(R.id.itemConfig).icon
+            )
+            UiUtil.setColorIntToDrawable(config.currentThemeColor, menu.findItem(R.id.itemTts).icon)
 
-            Log.e("112233", "show back button 12: ${config?.isShowBackBtn}")
-            Log.e("112233", "show bookmark 12:  ${config?.isShowBookMarkBtn}")
-            menu.findItem(R.id.itemBookmark).isVisible = config?.isShowBookMarkBtn == true
-            menu.findItem(R.id.itemSearch).isVisible = config?.isShowSearchBtn == true
-            menu.findItem(R.id.itemConfig).isVisible = config?.isShowSizeChangerBtn == true
-
-            menu.findItem(R.id.itemChapters).setOnMenuItemClickListener {
-                startContentHighlightActivity()
-                true
-            }
-
-            if (config?.isShowTts != true)
+            if (!config.isShowTts)
                 menu.findItem(R.id.itemTts).isVisible = false
         } catch (e: Exception) {
             Log.e("FOLIOREADER", e.message.toString())
@@ -530,48 +509,36 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
                 val readLocator = currentFragment?.getLastReadLocator()
                 Log.v(LOG_TAG, "-> onOptionsItemSelected 'if' -> bookmark")
 
-                bookmarkReadLocator = readLocator
-                val localBroadcastManager = LocalBroadcastManager.getInstance(this)
-                val intent = Intent(FolioReader.ACTION_SAVE_READ_LOCATOR)
-                intent.putExtra(FolioReader.EXTRA_READ_LOCATOR, readLocator as Parcelable?)
-                localBroadcastManager.sendBroadcast(intent)
-                val dialog = Dialog(this, R.style.DialogCustomTheme)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setContentView(R.layout.dialog_bookmark)
-                dialog.show()
-                dialog.setCanceledOnTouchOutside(true)
-                dialog.setOnCancelListener {
-                    Toast.makeText(
-                        this,
-                        "please enter a Bookmark name and then press Save",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            bookmarkReadLocator = readLocator;
+            val localBroadcastManager = LocalBroadcastManager.getInstance(this)
+            val intent = Intent(FolioReader.ACTION_SAVE_READ_LOCATOR)
+            intent.putExtra(FolioReader.EXTRA_READ_LOCATOR, readLocator as Parcelable?)
+            localBroadcastManager.sendBroadcast(intent)
+            val dialog = Dialog(this, R.style.DialogCustomTheme)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setContentView(R.layout.dialog_bookmark)
+            dialog.show()
+            dialog.setCanceledOnTouchOutside(true)
+            dialog.setOnCancelListener{
+                Toast.makeText(this,
+                    "please enter a Bookmark name and then press Save",
+                    Toast.LENGTH_SHORT).show()
+            }
+            dialog.findViewById<View>(R.id.btn_save_bookmark).setOnClickListener {
+                val name = (dialog.findViewById<View>(R.id.bookmark_name) as EditText).text.toString()
+                if (!TextUtils.isEmpty(name)) {
+                    val simpleDateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+                    val id =  BookmarkTable(this).insertBookmark(mBookId, simpleDateFormat.format(Date()), name, bookmarkReadLocator!!.toJson().toString());
+                    Toast.makeText(this,
+                        getString(R.string.book_mark_success),
+                        Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this,
+                        "please Enter a Bookmark name and then press Save",
+                        Toast.LENGTH_SHORT).show()
                 }
-                dialog.findViewById<View>(R.id.btn_save_bookmark).setOnClickListener {
-                    val name =
-                        (dialog.findViewById<View>(R.id.bookmark_name) as EditText).text.toString()
-                    if (!TextUtils.isEmpty(name)) {
-                        val simpleDateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
-                        val id = BookmarkTable(this).insertBookmark(
-                            mBookId,
-                            simpleDateFormat.format(Date()),
-                            name,
-                            bookmarkReadLocator?.toJson().toString()
-                        )
-                        Toast.makeText(
-                            this,
-                            getString(R.string.book_mark_success),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "please Enter a Bookmark name and then press Save",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    dialog.dismiss()
-                }
+                dialog.dismiss()
+            }
 
 
                 return true
@@ -1323,5 +1290,4 @@ class FolioActivity : AppCompatActivity(), FolioActivityCallback, MediaControlle
             }
         }
     }
-
 }
